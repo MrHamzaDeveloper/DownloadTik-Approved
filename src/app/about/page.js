@@ -26,17 +26,29 @@ const About = () => {
         </p>
 
         <p className="mb-4">
-          We understand the importance of accessibility, and we are committed to improving our platform to serve our users better every day.
+          We understand the importance of accessibility, and we are committed to improving our platform to serve our users better every day. Our team is passionate about bringing you the best tools to manage your TikTok content seamlessly.
         </p>
 
         <h2 className="text-2xl font-semibold mt-6 mb-4">Our Mission</h2>
         <p className="mb-4">
-          To provide a reliable, efficient, and secure service for downloading and sharing TikTok content.
+          To provide a reliable, efficient, and secure service for downloading and sharing TikTok content. We aim to empower our users by providing them with the tools they need to curate and share their favorite moments.
+        </p>
+
+        <h2 className="text-2xl font-semibold mt-6 mb-4">Our Values</h2>
+        <ul className="list-disc list-inside mb-4">
+          <li><strong>User-Centric:</strong> Our users are at the heart of everything we do. We strive to create an intuitive and satisfying experience.</li>
+          <li><strong>Integrity:</strong> We prioritize security and privacy, ensuring that your data is safe with us.</li>
+          <li><strong>Innovation:</strong> We continuously improve our platform, integrating new features and enhancements based on user feedback.</li>
+        </ul>
+
+        <h2 className="text-2xl font-semibold mt-6 mb-4">Our Journey</h2>
+        <p className="mb-4">
+          Since our inception, we have grown from a small project to a robust platform that serves thousands of users. Our journey is marked by a commitment to quality and a dedication to helping our community connect through TikTok.
         </p>
 
         <h2 className="text-2xl font-semibold mt-6 mb-4">Contact Us</h2>
         <p className="mb-4">
-          Have any questions? Reach out to us on our <a href="/contact" className="text-blue-500 hover:underline">Contact</a> page.
+          Have any questions? Reach out to us on our <a href="/contact" className="text-blue-500 hover:underline">Contact</a> page. We are always here to help and value your feedback.
         </p>
       </div>
 
