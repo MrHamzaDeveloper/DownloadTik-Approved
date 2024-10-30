@@ -1,0 +1,107 @@
+/* styles.css */
+
+/* General Styles */
+.loading-icon {
+    width: 70px;
+    height: 70px;
+  }
+  
+  @media (max-width: 640px) {
+    .loading-icon {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 65px;
+    }
+  }
+  
+  /* Input Field Styles */
+  .input-field {
+    width: 100%;
+    padding: 0.75rem 1rem; /* Adjusted for better appearance */
+    border: 1px solid #d1d5db; /* Gray border */
+    border-radius: 1rem 0 0 1rem; /* Rounded corners on the left */
+    font-size: 1.125rem; /* Text size */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s; /* Smooth transition for border color */
+  }
+  
+  /* Remove right border of fetch button when input is focused */
+  .input-field:focus + .fetch-button {
+    border-right: none; /* Remove right border */
+  }
+  
+  /* Fetch Button Styles */
+  .fetch-button {
+    padding: 1rem 2rem;
+    background-color: #3b82f6; /* Blue background */
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0 1rem 1rem 0; /* Rounded corners on the right */
+    font-size: 1.125rem; /* Text size */
+    transition: background-color 0.3s, transform 0.3s; /* Smooth transitions */
+    border: 1px solid #d1d5db; /* Add border */
+    border-left: none; /* Remove left border */
+    margin-left: -1px; /* Pull fetch button slightly left to attach it to input */
+  }
+  
+  .fetch-button:hover {
+    background-color: #2563eb; /* Darker blue on hover */
+    cursor: pointer; /* Pointer cursor */
+    transform: translateX(2px); /* Slight lift on hover */
+  }
+  
+  /* Disable State for Fetch Button */
+  .fetch-button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed; /* Not-allowed cursor */
+  }
+  
+  /* Paste Icon Styles */
+  .paste-button {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #3b82f6; /* Blue color */
+    font-size: 1.5rem; /* Adjusted size */
+    font-weight: bold;
+    transition: color 0.3s;
+  }
+  
+  .paste-button:hover {
+    color: #4f46e5; /* Darker blue on hover */
+  }
+  
+  /* Clear Icon Styles */
+  .clear-button {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #3b82f6; /* Blue color */
+    font-size: 1.5rem; /* Adjusted size */
+    font-weight: bold;
+    transition: color 0.3s;
+  }
+  
+  .clear-button:hover {
+    color: #ef4444; /* Red color on hover */
+  }
+  
+  /* Mobile Styles */
+  @media (max-width: 640px) {
+    .input-field {
+      border-radius: 0.5rem; /* Full rounded corners for mobile */
+      margin-bottom: 0.5rem; /* Space between input and button */
+    }
+    
+    .fetch-button {
+      width: 100%; /* Full width for mobile */
+      border-radius: 0.5rem; /* Full rounded corners for button */
+      margin-left: 0; /* No negative margin */
+    }
+    .fetch-button:hover{
+        transform: translateY(-1px); /* Slight lift on hover */
+    }
+  }
+  
