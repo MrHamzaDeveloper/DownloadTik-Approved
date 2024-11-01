@@ -6,159 +6,13 @@ import debounce from 'lodash.debounce';
 import styles from './TypewriterText.module.css';
 import './styles.css';
 import './globals.css';
+import VideoDownloadSection from '../components/VideoDownloadSection';
 
 const Header = React.lazy(() => import('../components/header')); // Lazy load Header for improved performance
 const Footer = React.lazy(() => import('../components/Footer')); // Lazy load Footer
 
 export default function Page() {
-  const [videoUrl, setVideoUrl] = useState('');
-  const [videoInfo, setVideoInfo] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [isDownloading, setIsDownloading] = useState(false);
-  const [isPhotoLink, setIsPhotoLink] = useState(false);
-  const [message, setMessage] = useState('');
-  const [isDownloadingVideo, setIsDownloadingVideo] = useState(false);
-  const [isDownloadingAudio, setIsDownloadingAudio] = useState(false);
-
-  // Reset states when videoUrl changes
-  useEffect(() => {
-    setVideoInfo(null);
-    setError('');
-    setIsPhotoLink(false);
-    setMessage('');
-  }, [videoUrl]);
-
-  // Update message while file is being downloaded
-  useEffect(() => {
-    if (isDownloading) {
-      setMessage("Your file is being processed...");
-      const processingTimeout = setTimeout(() => {
-        setMessage("Your file is being downloaded...");
-      }, 10000); // Display message after 10 seconds
-
-      return () => clearTimeout(processingTimeout);
-    }
-  }, [isDownloading]);
-
-  // Debounced API call to reduce unnecessary fetches
-  const debouncedFetchVideoInfo = useCallback(
-    debounce(async (url) => {
-      setLoading(true);
-      setError('');
-      setMessage('');
-      try {
-        const response = await fetch('/api/fetch-info', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url }),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          setError(errorData.error || 'An error occurred while fetching video info.');
-          return;
-        }
-
-        const data = await response.json();
-        setVideoInfo(data);
-        setIsPhotoLink(data.isPhotoOrSlideshow);
-        setMessage(data.isPhotoOrSlideshow ? "This is a slideshow or photo video, and only music is available to download." : "");
-      } catch (error) {
-        setError('Failed to fetch video info. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    }, 500), []
-  );
-
-  // Trigger the debounced fetch function
-  const handleFetch = () => {
-    const trimmedUrl = videoUrl.trim();
-    if (trimmedUrl) {
-      debouncedFetchVideoInfo(trimmedUrl);
-    } else {
-      setError('Please enter a valid URL');
-    }
-  };
-
-  // Handle the download process
-  const handleDownload = async (format) => {
-    if (!videoInfo || !videoInfo.finalUrl) {
-      console.log("Cannot download: Video info or final URL not available");
-      return;
-    }
-
-    // Prevent multiple clicks
-    if (isDownloading) return;
-
-    setIsDownloading(true);
-    if (format === 'audio') {
-      setIsDownloadingAudio(true);
-      setIsDownloadingVideo(false);
-    } else {
-      setIsDownloadingVideo(true);
-      setIsDownloadingAudio(false);
-    }
-
-    setError('');
-    setMessage('');
-
-    try {
-      const response = await fetch('/api/download', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: videoInfo.finalUrl, option: format }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.error || 'An error occurred while downloading.');
-        return;
-      }
-
-      const fileName = `SaveMyTikTok_${(videoInfo.captions?.slice(0, 20) || videoInfo.username).replace(/[^a-zA-Z0-9]/g, '_') || 'Untitled'}`;
-      const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = downloadUrl;
-      a.download = format === 'video' ? `${fileName}.mp4` : `${fileName}.mp3`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-
-      setMessage("Your file has been downloaded securely.");
-    } catch (error) {
-      setError('Failed to download media. Please try again.');
-    } finally {
-      setIsDownloading(false);
-      if (format === 'audio') {
-        setIsDownloadingAudio(false);
-      } else {
-        setIsDownloadingVideo(false);
-      }
-    }
-  };
-
-  // Clear input and reset states
-  const handleClear = () => {
-    setVideoUrl('');
-    setVideoInfo(null);
-    setError('');
-    setIsPhotoLink(false);
-    setMessage('');
-  };
-
-  const handlePaste = async () => {
-    try {
-        const text = await navigator.clipboard.readText();
-        setVideoUrl(text);
-    } catch (error) {
-        console.error('Failed to read clipboard contents: ', error);
-    }
-};
-
-
+  
   return (
     <>
       <div>
@@ -166,167 +20,26 @@ export default function Page() {
         <Header />
       </Suspense>
       <div className="container mx-auto py-10 px-4 flex flex-col items-center">
-      <h1 className={`${styles.typewriter} flex items-center justify-center mb-6 text-center`}>
-      <span className={styles['typewriter-text']}>
-        {"Download TikTok video without watermark in HD Quality".split("").map((char, index) => (
-          <span key={index} className={styles.letter} style={{ animationDelay: `${index * 0.05}s` }}>
-            {char === " " ? "\u00A0" : char}
-          </span>
-        ))}
-        <span className={styles.cursor} style={{ animationDelay: `${("Download TikTok video without watermark in HD Quality".length) * 0.05}s` }}></span>
-      </span>
-    </h1>
+          {/* Typewriter Effect */}
+          <h1 className={`${styles.typewriter} flex items-center justify-center mb-6 text-center`}>
+            <span className={styles['typewriter-text']}>
+              {"Download TikTok video without watermark in HD Quality".split("").map((char, index) => (
+                <span key={index} className={styles.letter} style={{ animationDelay: `${index * 0.05}s` }}>
+                  {char === " " ? "\u00A0" : char}
+                </span>
+              ))}
+              <span
+                className={styles.cursor}
+                style={{ animationDelay: `${("Download TikTok video without watermark in HD Quality".length) * 0.05}s` }}
+              ></span>
+            </span>
+          </h1>
 
-
-    <div className="flex w-full justify-center mb-6 relative">
-  <div className="relative w-full flex flex-col md:flex-row max-w-5xl md:max-w-3xl lg:max-w-5xl">
-    {/* Input Field Wrapper */}
-    <div className="relative w-full flex">
-      <input
-        type="text"
-        placeholder="Enter TikTok URL"
-        value={videoUrl}
-        onChange={(e) => setVideoUrl(e.target.value)}
-        className={`input-field ${loading ? 'opacity-50' : ''}`}
-      />
-      
-      {/* Paste Icon */}
-      {!videoUrl && (
-        <button
-          onClick={handlePaste}
-          className="paste-button"
-          aria-label="Paste URL"
-        >
-          📋
-        </button>
-      )}
-      
-      {/* Clear Icon */}
-      {videoUrl && (
-        <button
-          onClick={() => setVideoUrl('')}
-          className="clear-button"
-          aria-label="Clear input"
-        >
-          ✕
-        </button>
-      )}
-    </div>
-    
-    <button
-      onClick={handleFetch}
-      className={`fetch-button ${loading ? 'disabled' : ''}`}
-      disabled={loading}
-    >
-      {loading ? 'Fetching...' : 'Fetch'}
-    </button>
-  </div>
-
-  {/* Centered loading GIF overlay */}
-  {loading && (
-    <div className="absolute inset-0 flex items-center justify-center">
-      <img
-        src="/images/loader1.gif"
-        alt="Loading..."
-        className="loading-icon"
-      />
-    </div>
-  )}
-</div>
-
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        {videoInfo && (
-  <div className="mt-6 flex flex-col items-center w-full">
-    <div className="bg-white/30 backdrop-blur-lg rounded-lg shadow-2xl p-6 w-full max-w-lg md:max-w-xl lg:max-w-2xl border-4 border-black transition duration-300 hover:shadow-3xl">
-      <div className="flex items-center">
-        <img
-          src={videoInfo.thumbnail}
-          alt={`${videoInfo.username}'s video thumbnail`}
-          className="rounded-lg shadow-lg mr-6"
-          style={{ width: '150px', height: '150px' }}
-        />
-        <div className="text-sm text-gray-700">
-          <p><strong>Username:</strong> {videoInfo.username}</p>
-          <p><strong>Captions:</strong> {videoInfo.captions}</p>
-          <p><strong>Duration:</strong> {videoInfo.duration}</p>
-          <p><strong>File Size:</strong> {videoInfo.fileSize} MB</p>
+          {/* Video Download Section */}
+          <VideoDownloadSection />
         </div>
-      </div>
 
-      <div className="mt-6 text-center relative flex flex-col md:flex-row md:justify-center">
-        {isPhotoLink ? (
-          <button
-            onClick={() => {
-              handleDownload('audio');
-            }}
-            className={`flex items-center justify-center px-4 py-2 bg-yellow-500 text-white rounded mb-2 md:mb-0 md:mr-2 ${isDownloading ? 'opacity-50 cursor-not-allowed' : ''}`}
-            aria-disabled={isDownloading}
-            disabled={isDownloading}
-          >
-            <img src="/images/mp3.png" alt="Download Audio" className="w-5 h-5 mr-2" />
-            {isDownloadingAudio ? 'Downloading...' : 'Download MP3'}
-          </button>
-        ) : (
-          <>
-            <button
-              onClick={() => {
-                handleDownload('video');
-              }}
-              className={`flex items-center justify-center px-4 py-2 bg-green-500 text-white rounded mb-2 md:mb-0 md:mr-2 ${isDownloading ? 'opacity-50 cursor-not-allowed' : ''}`}
-              aria-disabled={isDownloading}
-              disabled={isDownloading}
-            >
-              <img src="/images/mp4.png" alt="Download Video" className="w-5 h-5 mr-2" />
-              {isDownloadingVideo ? 'Downloading Video...' : 'Download Video'}
-            </button>
-            <button
-              onClick={() => {
-                handleDownload('audio');
-              }}
-              className={`flex items-center justify-center px-4 py-2 bg-yellow-500 text-white rounded mb-2 md:mb-0 md:mr-2 ${isDownloading ? 'opacity-50 cursor-not-allowed' : ''}`}
-              aria-disabled={isDownloading}
-              disabled={isDownloading}
-            >
-              <img src="/images/mp3.png" alt="Download Audio" className="w-5 h-5 mr-2" />
-              {isDownloadingAudio ? 'Downloading Music...' : 'Download Music'}
-            </button>
-          </>
-        )}
-        
-        <button
-          onClick={handleClear}
-          className="px-4 py-2 bg-red-500 text-white rounded mb-2 md:mb-0"
-        >
-          Clear
-        </button>
 
-        {/* Loader GIF for mobile view */}
-        {isDownloading && (
-          <img
-            src="/images/download.gif"
-            alt="Loading"
-            className="mt-2 md:hidden w-16 h-16 mx-auto"
-          />
-        )}
-      </div>
-
-      {/* Loader GIF for desktop view */}
-      {isDownloading && (
-        <div className="mt-6 text-center hidden md:block">
-          <img src="/images/download.gif" alt="Loading" className="w-16 h-16 mx-auto" />
-        </div>
-      )}
-
-      {/* Message display, centered below the download buttons */}
-      {message && (
-        <div className="mt-6 text-center">
-          <p className="text-green-500">{message}</p>
-        </div>
-      )}
-    </div>
-  </div>
-)}
-      </div>
       <div className="mt-10 w-full max-w-3xl mx-auto p-4 blog-container">
   <h2 className="text-2xl font-semibold mb-4 text-center border-b-2 border-gray-300 pb-2">
     Why Use a TikTok Video Downloader Without Watermark?
