@@ -1,7 +1,6 @@
 // components/Footer.js
-
-import React from 'react';
-import Link from 'next/link';
+import React from "react";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -16,25 +15,37 @@ const Footer = () => {
 
           {/* Footer Navigation Links */}
           <div className="flex flex-col items-center md:flex-row md:space-x-8 justify-center mb-4 md:mb-0">
-            <Link href="/#faqs" className="text-gray-700 hover:text-blue-600 hover:underline mb-2 md:mb-0 transition duration-300">FAQs</Link>
-            <Link href="/privacy" className="text-gray-700 hover:text-blue-600 hover:underline mb-2 md:mb-0 transition duration-300">Privacy Policy</Link>
-            <Link href="/terms-and-conditions" className="text-gray-700 hover:text-blue-600 hover:underline mb-2 md:mb-0 transition duration-300">Terms and Conditions</Link>
-            <Link href="/#sitemap" className="text-gray-700 hover:text-blue-600 hover:underline mb-2 md:mb-0 transition duration-300">Sitemap</Link>
+            {[
+              { label: "FAQs", href: "/" }, // Link to the landing page
+              { label: "Privacy Policy", href: "/privacy" },
+              { label: "Terms and Conditions", href: "/terms-and-conditions" },
+              { label: "Sitemap", href: "/sitemap" },
+            ].map(({ label, href }) => (
+              <Link
+                key={label}
+                href={label === "FAQs" ? "/#faqs" : href} // Use hash for FAQs
+                className="text-gray-700 hover:text-blue-600 hover:underline mb-2 md:mb-0 transition duration-300"
+              >
+                {label}
+              </Link>
+            ))}
           </div>
 
           {/* Social Media Links */}
           <div className="mt-4 md:mt-0 text-center">
             <h4 className="text-lg font-semibold">Follow Us</h4>
             <div className="flex justify-center space-x-4">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-blue-600 transition duration-300">
-                <i className="fab fa-facebook-f"></i>
-              </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-blue-600 transition duration-300">
-                <i className="fab fa-twitter"></i>
-              </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-blue-600 transition duration-300">
-                <i className="fab fa-instagram"></i>
-              </a>
+              {["facebook-f", "twitter", "instagram"].map((platform) => (
+                <a
+                  key={platform}
+                  href={`https://${platform}.com`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-700 hover:text-blue-600 transition duration-300"
+                >
+                  <i className={`fab fa-${platform}`}></i>
+                </a>
+              ))}
             </div>
           </div>
         </div>

@@ -1,12 +1,12 @@
-import { exec } from 'child_process';
+import { execFile } from 'child_process';
 import axios from 'axios';
+import { promisify } from 'util';
 
+const execFileAsync = promisify(execFile);
 const activeDownloads = new Set();
 
 // Modify URL if necessary (change photo to video URL)
-const modifyUrl = (url) => {
-    return url.includes('/photo/') ? url.replace('/photo/', '/video/') : url;
-};
+const modifyUrl = (url) => url.includes('/photo/') ? url.replace('/photo/', '/video/') : url;
 
 // Resolve short TikTok URL (https://vt.tiktok.com)
 const resolveShortUrl = async (url) => {
@@ -40,52 +40,42 @@ const fetchFileSize = async (url) => {
 
 // Fetch captions, username, thumbnail, duration, and file size from the TikTok video
 const fetchVideoInfo = async (url) => {
-    return new Promise((resolve, reject) => {
-        const command = `yt-dlp --dump-json "${url}"`;
-        exec(command, async (error, stdout) => {
-            if (error) {
-                console.error(`exec error: ${error.message}`);
-                return reject(new Error('Failed to fetch metadata'));
-            }
-            try {
-                const metadata = JSON.parse(stdout);
-                
-                const captions = metadata.description || '';
-                const username = metadata.uploader || 'Unknown';
-                const thumbnail = metadata.thumbnail || '';
-                const duration = metadata.duration || 0;
-                
-                // File size check
-                let fileSize = metadata.filesize 
-                    ? (metadata.filesize / (1024 * 1024)).toFixed(2)
-                    : metadata.filesize_approx 
-                    ? (metadata.filesize_approx / (1024 * 1024)).toFixed(2)
-                    : await fetchFileSize(metadata.url || url);
+    try {
+        const { stdout } = await execFileAsync('yt-dlp', ['--dump-json', url]);
+        const metadata = JSON.parse(stdout);
 
-                resolve({
-                    captions,
-                    username,
-                    thumbnail,
-                    finalUrl: url,
-                    duration: formatDuration(duration), // Formatted duration
-                    fileSize
-                });
-            } catch (err) {
-                reject(new Error('Failed to parse metadata'));
-            }
-        });
-    });
+        const captions = metadata.description || '';
+        const username = metadata.uploader || 'Unknown';
+        const thumbnail = metadata.thumbnail || '';
+        const duration = metadata.duration || 0;
+
+        // File size check
+        const fileSize = metadata.filesize
+            ? (metadata.filesize / (1024 * 1024)).toFixed(2)
+            : metadata.filesize_approx
+            ? (metadata.filesize_approx / (1024 * 1024)).toFixed(2)
+            : await fetchFileSize(metadata.url || url);
+
+        return {
+            captions,
+            username,
+            thumbnail,
+            duration: formatDuration(duration),
+            fileSize,
+        };
+    } catch (error) {
+        console.error(`Error fetching video info: ${error.message}`);
+        throw new Error('Failed to fetch metadata');
+    }
 };
 
 // POST request handler
 export async function POST(req) {
-    try {
-        const { url: videoUrl } = await req.json();
+    let videoUrl; // Declare videoUrl outside of try block for accessibility in finally
 
-        // Reset previous error data
-        // (If you have an error storage mechanism, clear it here)
-        // For example, if using a global error object:
-        // errorData = null; 
+    try {
+        const { url } = await req.json();
+        videoUrl = url; // Assign videoUrl here
 
         if (!videoUrl) {
             return new Response(JSON.stringify({ error: 'No video URL provided' }), { status: 400 });
@@ -125,11 +115,16 @@ export async function POST(req) {
             thumbnail,
             finalUrl,
             isPhotoOrSlideshow,
-            duration,  // Formatted duration
-            fileSize   // File size in MB
+            duration,
+            fileSize
         }), { status: 200 });
     } catch (error) {
         console.error(error);
         return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+    } finally {
+        // Ensure we always remove the URL from activeDownloads even if there's an error
+        if (videoUrl) {
+            activeDownloads.delete(videoUrl);
+        }
     }
 }
