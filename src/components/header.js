@@ -38,7 +38,7 @@ const Header = () => {
   // Memoize menu items for performance
   const menuItems = useMemo(
     () => [
-      { label: "Home", href: "/#faqs" }, // Adjusted for FAQ section on landing page
+      { label: "Home", href: "/" }, // Adjusted for FAQ section on landing page
       { label: "About Us", href: "/about" },
       { label: "Disclaimer", href: "/disclaimer" },
       { label: "Contact", href: "/contact" },

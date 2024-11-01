@@ -1,13 +1,14 @@
 // Import necessary modules
 "use client";
 
-import Header from '../components/header'; // Adjust the path if needed
-import Footer from '../components/Footer';
-import { useState, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, Suspense } from 'react';
+import debounce from 'lodash.debounce';
 import styles from './TypewriterText.module.css';
-import './styles.css'; // Adjust the path as needed
+import './styles.css';
 import './globals.css';
 
+const Header = React.lazy(() => import('../components/header')); // Lazy load Header for improved performance
+const Footer = React.lazy(() => import('../components/Footer')); // Lazy load Footer
 
 export default function Page() {
   const [videoUrl, setVideoUrl] = useState('');
@@ -17,13 +18,10 @@ export default function Page() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isPhotoLink, setIsPhotoLink] = useState(false);
   const [message, setMessage] = useState('');
-  const [showLoader, setShowLoader] = useState(false);
   const [isDownloadingVideo, setIsDownloadingVideo] = useState(false);
   const [isDownloadingAudio, setIsDownloadingAudio] = useState(false);
 
-
-
-  // Clear previous data whenever videoUrl changes
+  // Reset states when videoUrl changes
   useEffect(() => {
     setVideoInfo(null);
     setError('');
@@ -31,131 +29,118 @@ export default function Page() {
     setMessage('');
   }, [videoUrl]);
 
+  // Update message while file is being downloaded
   useEffect(() => {
     if (isDownloading) {
-      setShowLoader(true);
       setMessage("Your file is being processed...");
-      
-      // Set a timeout for the processing message
       const processingTimeout = setTimeout(() => {
         setMessage("Your file is being downloaded...");
-      }, 10000); // 10 seconds
-  
-      return () => clearTimeout(processingTimeout); // Cleanup on unmount
+      }, 10000); // Display message after 10 seconds
+
+      return () => clearTimeout(processingTimeout);
     }
   }, [isDownloading]);
-  
-  
 
-  const fetchVideoInfo = async (url) => {
-    setLoading(true);
-    setError('');
-    setMessage('');
-    try {
-      const response = await fetch('/api/fetch-info', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
-      });
+  // Debounced API call to reduce unnecessary fetches
+  const debouncedFetchVideoInfo = useCallback(
+    debounce(async (url) => {
+      setLoading(true);
+      setError('');
+      setMessage('');
+      try {
+        const response = await fetch('/api/fetch-info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url }),
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.error || 'An error occurred while fetching video info.');
-        return;
+        if (!response.ok) {
+          const errorData = await response.json();
+          setError(errorData.error || 'An error occurred while fetching video info.');
+          return;
+        }
+
+        const data = await response.json();
+        setVideoInfo(data);
+        setIsPhotoLink(data.isPhotoOrSlideshow);
+        setMessage(data.isPhotoOrSlideshow ? "This is a slideshow or photo video, and only music is available to download." : "");
+      } catch (error) {
+        setError('Failed to fetch video info. Please try again later.');
+      } finally {
+        setLoading(false);
       }
+    }, 500), []
+  );
 
-      const data = await response.json();
-      setVideoInfo(data);
-      setIsPhotoLink(data.isPhotoOrSlideshow);
-      if (data.isPhotoOrSlideshow) {
-        setMessage("This is a slideshow or photo video, and only music is available to download.");
-      }
-    } catch (error) {
-      setError('Failed to fetch video info. Please try again later.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Trigger the debounced fetch function
   const handleFetch = () => {
     const trimmedUrl = videoUrl.trim();
     if (trimmedUrl) {
-      fetchVideoInfo(trimmedUrl);
+      debouncedFetchVideoInfo(trimmedUrl);
     } else {
       setError('Please enter a valid URL');
     }
   };
 
-  const handlePaste = async () => {
-    try {
-      const text = await navigator.clipboard.readText();
-      setVideoUrl(text);
-    } catch (error) {
-      console.error('Failed to read clipboard contents: ', error);
-    }
-  };
-
+  // Handle the download process
   const handleDownload = async (format) => {
     if (!videoInfo || !videoInfo.finalUrl) {
-        console.log("Cannot download: Video info or final URL not available");
-        return;
+      console.log("Cannot download: Video info or final URL not available");
+      return;
     }
 
     // Prevent multiple clicks
-    if (isDownloading) return; // If already downloading, exit
+    if (isDownloading) return;
 
-    setIsDownloading(true); // Set to true when a download starts
-
-    // Set downloading state based on the format
+    setIsDownloading(true);
     if (format === 'audio') {
-        setIsDownloadingAudio(true);
-        setIsDownloadingVideo(false);
+      setIsDownloadingAudio(true);
+      setIsDownloadingVideo(false);
     } else {
-        setIsDownloadingVideo(true);
-        setIsDownloadingAudio(false);
+      setIsDownloadingVideo(true);
+      setIsDownloadingAudio(false);
     }
 
     setError('');
     setMessage('');
 
     try {
-        const response = await fetch('/api/download', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: videoInfo.finalUrl, option: format }),
-        });
+      const response = await fetch('/api/download', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: videoInfo.finalUrl, option: format }),
+      });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            setError(errorData.error || 'An error occurred while downloading.');
-            return;
-        }
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.error || 'An error occurred while downloading.');
+        return;
+      }
 
-        const fileName = `SaveMyTikTok_${(videoInfo.captions?.slice(0, 20) || videoInfo.username).replace(/[^a-zA-Z0-9]/g, '_') || 'Untitled'}`;
-        const blob = await response.blob();
-        const downloadUrl = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = downloadUrl;
-        a.download = format === 'video' ? `${fileName}.mp4` : `${fileName}.mp3`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+      const fileName = `SaveMyTikTok_${(videoInfo.captions?.slice(0, 20) || videoInfo.username).replace(/[^a-zA-Z0-9]/g, '_') || 'Untitled'}`;
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = format === 'video' ? `${fileName}.mp4` : `${fileName}.mp3`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
 
-        setMessage("Your file has been downloaded securely.");
+      setMessage("Your file has been downloaded securely.");
     } catch (error) {
-        setError('Failed to download media. Please try again.');
+      setError('Failed to download media. Please try again.');
     } finally {
-        setIsDownloading(false); // Reset when download is complete
-        if (format === 'audio') {
-            setIsDownloadingAudio(false);
-        } else {
-            setIsDownloadingVideo(false);
-        }
+      setIsDownloading(false);
+      if (format === 'audio') {
+        setIsDownloadingAudio(false);
+      } else {
+        setIsDownloadingVideo(false);
+      }
     }
-};
+  };
 
-
-
+  // Clear input and reset states
   const handleClear = () => {
     setVideoUrl('');
     setVideoInfo(null);
@@ -164,9 +149,22 @@ export default function Page() {
     setMessage('');
   };
 
+  const handlePaste = async () => {
+    try {
+        const text = await navigator.clipboard.readText();
+        setVideoUrl(text);
+    } catch (error) {
+        console.error('Failed to read clipboard contents: ', error);
+    }
+};
+
+
   return (
     <>
-      <Header />
+      <div>
+      <Suspense fallback={<div>Loading Header...</div>}>
+        <Header />
+      </Suspense>
       <div className="container mx-auto py-10 px-4 flex flex-col items-center">
       <h1 className={`${styles.typewriter} flex items-center justify-center mb-6 text-center`}>
       <span className={styles['typewriter-text']}>
@@ -412,7 +410,10 @@ export default function Page() {
 </div>
 
 {/* Include the footer at the bottom */}
-<Footer />
+<Suspense fallback={<div>Loading Footer...</div>}>
+        <Footer />
+      </Suspense>
+    </div>
     </>
     
   );
