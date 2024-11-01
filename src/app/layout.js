@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
       <head>
         {/* Static metadata */}
         <meta name="description" content="Download TikTok videos with ease!" />
-        <title>SaveMyTikTok</title>
+        <title>DownloadTik</title>
         {/* Preload the font files for better performance */}
         <link
           rel="preload"

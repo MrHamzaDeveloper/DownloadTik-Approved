@@ -9,10 +9,10 @@ const About = () => {
   return (
     <div>
       <Head>
-        <title>About Us - SaveMyTikTok</title>
+        <title>About Us - DownloadTik</title>
         <meta
           name="description"
-          content="Learn more about SaveMyTikTok and our dedication to providing seamless file-saving services."
+          content="Learn more about DownloadTik and our dedication to providing seamless file-saving services."
         />
       </Head>
       
@@ -22,7 +22,7 @@ const About = () => {
         <h1 className="text-3xl font-bold text-center mb-6">About Us</h1>
         
         <p className="mb-4">
-          SaveMyTikTok is dedicated to helping users easily save TikTok videos for offline access and sharing. Our goal is to provide a user-friendly experience that makes saving your favorite content simple and quick.
+          DownloadTik is dedicated to helping users easily save TikTok videos for offline access and sharing. Our goal is to provide a user-friendly experience that makes saving your favorite content simple and quick.
         </p>
 
         <p className="mb-4">

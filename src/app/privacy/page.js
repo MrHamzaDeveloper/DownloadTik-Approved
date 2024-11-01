@@ -9,11 +9,11 @@ const PrivacyPolicy = () => {
     <div>
       <Header />
       <div className="max-w-3xl mx-auto p-4">
-        <h1 className="text-3xl font-bold text-center mb-6">Privacy Policy for SaveMyTikTok</h1>
+        <h1 className="text-3xl font-bold text-center mb-6">Privacy Policy for DownloadTik</h1>
         <p className="mb-4">Last updated: October 30, 2024</p>
 
         <p className="mb-4">
-          Welcome to SaveMyTikTok! Your privacy is important to us, and this Privacy Policy explains how we collect, use, and protect your information when you visit our website.
+          Welcome to DownloadTik! Your privacy is important to us, and this Privacy Policy explains how we collect, use, and protect your information when you visit our website.
         </p>
 
         <h2 className="text-2xl font-semibold mt-6 mb-4">Information We Collect</h2>
@@ -53,7 +53,7 @@ const PrivacyPolicy = () => {
         </p>
 
         <p className="mb-4">
-          Thank you for trusting SaveMyTikTok with your information! We are committed to protecting your privacy and providing you with a safe online experience.
+          Thank you for trusting DownloadTik with your information! We are committed to protecting your privacy and providing you with a safe online experience.
         </p>
       </div>
       <Footer />

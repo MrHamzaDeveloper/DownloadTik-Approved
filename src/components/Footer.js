@@ -10,7 +10,7 @@ const Footer = () => {
         <div className="flex flex-col items-center md:flex-row md:justify-between">
           {/* Logo Section */}
           <div className="mb-4 md:mb-0 text-center md:text-left">
-            <h1 className="text-3xl font-bold">SaveMyTikTok</h1>
+            <h1 className="text-3xl font-bold">DownloadTik.</h1>
           </div>
 
           {/* Footer Navigation Links */}
@@ -52,7 +52,10 @@ const Footer = () => {
 
         {/* Copyright Section */}
         <div className="mt-6 text-center border-t border-gray-300 pt-4">
-          <p className="text-sm">&copy; {new Date().getFullYear()} SaveMyTikTok. All rights reserved.</p>
+        <p className="text-center text-gray-500 text-sm">
+          We are not affiliated with TikTok or ByteDance in any way.
+        </p> <br></br>
+          <p className="text-sm">&copy; {new Date().getFullYear()} DownloadTik. All rights reserved.</p>
         </div>
       </div>
     </footer>

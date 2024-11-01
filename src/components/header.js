@@ -51,7 +51,7 @@ const Header = () => {
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo as a clickable link */}
         <Link href="/" className="text-2xl font-bold transition-transform duration-300 hover:text-blue-600">
-          SaveMyTikTok
+          DownloadTik.
         </Link>
 
         {/* Desktop Menu */}
