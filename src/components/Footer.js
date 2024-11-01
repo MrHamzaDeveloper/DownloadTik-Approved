@@ -1,6 +1,7 @@
 // components/Footer.js
 
 import React from 'react';
+import Link from 'next/link';
 
 const Footer = () => {
   return (
@@ -15,10 +16,10 @@ const Footer = () => {
 
           {/* Footer Navigation Links */}
           <div className="flex flex-col items-center md:flex-row md:space-x-8 justify-center mb-4 md:mb-0">
-            <a href="/#faqs" className="text-gray-700 hover:text-blue-600 hover:underline mb-2 md:mb-0 transition duration-300">FAQs</a>
-            <a href="privacy" className="text-gray-700 hover:text-blue-600 hover:underline mb-2 md:mb-0 transition duration-300">Privacy Policy</a>
-            <a href="/terms-and-conditions" className="text-gray-700 hover:text-blue-600 hover:underline mb-2 md:mb-0 transition duration-300">Terms and Conditions</a>
-            <a href="#sitemap" className="text-gray-700 hover:text-blue-600 hover:underline mb-2 md:mb-0 transition duration-300">Sitemap</a>
+            <Link href="/#faqs" className="text-gray-700 hover:text-blue-600 hover:underline mb-2 md:mb-0 transition duration-300">FAQs</Link>
+            <Link href="/privacy" className="text-gray-700 hover:text-blue-600 hover:underline mb-2 md:mb-0 transition duration-300">Privacy Policy</Link>
+            <Link href="/terms-and-conditions" className="text-gray-700 hover:text-blue-600 hover:underline mb-2 md:mb-0 transition duration-300">Terms and Conditions</Link>
+            <Link href="/#sitemap" className="text-gray-700 hover:text-blue-600 hover:underline mb-2 md:mb-0 transition duration-300">Sitemap</Link>
           </div>
 
           {/* Social Media Links */}
