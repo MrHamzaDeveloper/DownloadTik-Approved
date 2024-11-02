@@ -17,7 +17,7 @@
 .body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Geist Sans', Arial, Helvetica, sans-serif;
 }
 .border {
   border-width: 2px; /* Adjust border thickness as needed */
@@ -112,11 +112,25 @@
   }
 }
 
+/* globals.css */
 @font-face {
-  font-family: 'Geist';
-  src: url('/fonts/GeistVF.woff') format('woff'), /* Adjust the format as necessary */
-       url('/fonts/GeistMonoVF.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
+  font-family: 'GeistSans';
+  src: url('/fonts/GeistVF.woff') format('woff');
+  font-weight: 100 900;
+  font-display: swap;
 }
+
+@font-face {
+  font-family: 'GeistMono';
+  src: url('/fonts/GeistMonoVF.woff') format('woff');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+/* Use the custom fonts in CSS */
+body {
+  font-family: 'GeistSans', sans-serif;
+}
+
+
 
