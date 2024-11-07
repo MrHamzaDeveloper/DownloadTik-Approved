@@ -3,6 +3,7 @@ import debounce from 'lodash.debounce';
 import '../app/styles.css';
 import '../app/globals.css';
 
+
 const VideoDownloadSection = () => {
   const [videoUrl, setVideoUrl] = useState('');
   const [videoInfo, setVideoInfo] = useState(null);
@@ -27,26 +28,30 @@ const VideoDownloadSection = () => {
   };
 
   useEffect(() => {
-    if (videoUrl.trim() === '') {
-      handleClear(); // Clear states if URL is empty
-    } else {
-      setVideoInfo(null);
-      setError('');
-      setIsPhotoLink(false);
-      setMessage('');
+    // Ensure this effect only runs on the client side
+    if (typeof window !== 'undefined') {
+      if (videoUrl.trim() === '') {
+        handleClear(); // Clear states if URL is empty
+      } else {
+        setVideoInfo(null);
+        setError('');
+        setIsPhotoLink(false);
+        setMessage('');
+      }
     }
   }, [videoUrl]);
-
+  
   useEffect(() => {
-    if (isDownloading) {
+    if (typeof window !== 'undefined' && isDownloading) {
       setMessage("Your file is being processed...");
       const processingTimeout = setTimeout(() => {
         setMessage("Your file is being downloaded...");
       }, 10000);
-
+  
       return () => clearTimeout(processingTimeout);
     }
   }, [isDownloading]);
+  
 
   const debouncedFetchVideoInfo = useCallback(
     debounce(async (url) => {
@@ -114,7 +119,7 @@ const VideoDownloadSection = () => {
         return;
       }
 
-      const fileName = `SaveMyTikTok_${(videoInfo.captions?.slice(0, 20) || videoInfo.username).replace(/[^a-zA-Z0-9]/g, '_') || 'Untitled'}`;
+      const fileName = `DownloadTik_${(videoInfo.captions?.slice(0, 20) || videoInfo.username).replace(/[^a-zA-Z0-9]/g, '_') || 'Untitled'}`;
       const blob = await response.blob();
       const downloadUrl = window.URL.createObjectURL(blob);
       downloadLinkRef.current.href = downloadUrl;
@@ -132,13 +137,16 @@ const VideoDownloadSection = () => {
   };
 
   const handlePaste = async () => {
-    try {
-      const text = await navigator.clipboard.readText();
-      setVideoUrl(text);
-    } catch (err) {
-      setError('Failed to paste from clipboard. Please paste manually.');
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      try {
+        const text = await navigator.clipboard.readText();
+        setVideoUrl(text);
+      } catch (err) {
+        setError('Failed to paste from clipboard. Please paste manually.');
+      }
     }
   };
+  
 
   return (
     <div className="container mx-auto py-10 px-4 flex flex-col items-center max-w-full overflow-hidden">

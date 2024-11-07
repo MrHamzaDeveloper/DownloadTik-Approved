@@ -16,25 +16,29 @@ const Header = () => {
     setIsOpen(false);
   }, []);
 
-  // Close the menu when clicking outside of it
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(event.target) &&
-        iconRef.current &&
-        !iconRef.current.contains(event.target)
-      ) {
-        closeMenu();
-      }
-    };
+    if (typeof window !== 'undefined') { // Check to ensure code runs on the client side
+      const handleClickOutside = (event) => {
+        // Check if the click happened outside of the menu or the icon
+        if (
+          menuRef.current &&
+          !menuRef.current.contains(event.target) &&
+          iconRef.current &&
+          !iconRef.current.contains(event.target)
+        ) {
+          closeMenu();
+        }
+      };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [closeMenu]);
+      // Attach the event listener to the document
+      document.addEventListener("mousedown", handleClickOutside);
 
+      // Clean up the event listener when the component is unmounted
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }
+  }, []); // No dependencies needed if closeMenu is stable
   // Memoize menu items for performance
   const menuItems = useMemo(
     () => [

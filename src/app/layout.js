@@ -2,26 +2,46 @@
 
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import dynamic from "next/dynamic";
 import "./globals.css";
-import styles from "./GdprBanner.module.css";
+
+// Dynamically load the GDPR banner to avoid SSR-related hydration issues
+const GdprBanner = dynamic(() => import("../components/GdprBanner"), { ssr: false });
 
 export default function RootLayout({ children }) {
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
+    // Override console.error to filter out specific hydration mismatch warnings
+    const originalError = console.error;
+    console.error = (...args) => {
+      if (
+        typeof args[0] === "string" &&
+        args[0].includes("A tree hydrated but some attributes of the server rendered HTML didn't match the client properties")
+      ) {
+        return; // Suppress this specific error
+      }
+      originalError(...args);
+    };
+    return () => {
+      console.error = originalError;
+    };
+  }, []);
+
+  useEffect(() => {
     const consent = Cookies.get("gdprConsent");
     if (!consent) {
-      setShowBanner(true);
+      setShowBanner(true); // Show the banner only if consent hasn't been set
     }
   }, []);
 
   const handleAccept = () => {
-    Cookies.set("gdprConsent", "accepted", { expires: 365 }); // Set cookie to expire in 1 year
+    Cookies.set("gdprConsent", "accepted", { expires: 365 });
     setShowBanner(false);
   };
 
   const handleDecline = () => {
-    Cookies.set("gdprConsent", "declined", { expires: 365 }); // Set cookie to expire in 1 year
+    Cookies.set("gdprConsent", "declined", { expires: 365 });
     setShowBanner(false);
   };
 
@@ -45,17 +65,10 @@ export default function RootLayout({ children }) {
           crossOrigin="anonymous"
         />
       </head>
-      <body className="antialiased">
+      <body className="antialiased" suppressHydrationWarning>
         {children}
 
-        {/* GDPR Consent Banner */}
-        {showBanner && (
-          <div className={styles.gdprBanner}>
-            <p>We use cookies to enhance your experience. By using our site, you agree to our privacy policy.</p>
-            <button onClick={handleAccept} className={styles.bannerButton}>Accept</button>
-            <button onClick={handleDecline} className={styles.bannerButton}>Decline</button>
-          </div>
-        )}
+        {showBanner && <GdprBanner onAccept={handleAccept} onDecline={handleDecline} />}
       </body>
     </html>
   );
