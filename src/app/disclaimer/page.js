@@ -2,15 +2,26 @@
 
 "use client"; // Mark this file as a client component
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../../components/header'; // Adjust the import based on your structure
 import Footer from '../../components/Footer'; // Adjust the import based on your structure
 
 const Disclaimer = () => {
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Delay hydration logic until after the initial render
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  if (!isHydrated) {
+    return null; // You can show a loading spinner or nothing until hydration is complete
+  }
+
   return (
     <div>
       <Header />
-      <div className="max-w-3xl mx-auto p-4 bg-gray-50 shadow-md rounded-lg">
+      <div className="max-w-3xl mx-auto p-4 bg-gray-50 shadow-md rounded-lg mt-6">
         <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Disclaimer</h1>
         <p className="mb-4 text-gray-700 leading-relaxed">
           The information provided by DownloadTik is for general informational purposes only. While we strive to provide accurate and up-to-date information, we make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability, or availability with respect to the website or the information, products, services, or related graphics contained on the website for any purpose.

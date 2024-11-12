@@ -19,7 +19,7 @@ const Footer = () => {
               { label: "FAQs", href: "/" }, // Link to the landing page
               { label: "Privacy Policy", href: "/privacy" },
               { label: "Terms and Conditions", href: "/terms-and-conditions" },
-              { label: "Sitemap", href: "/sitemap" },
+              { label: "Sitemap", href: "/sitemap.xml" },
             ].map(({ label, href }) => (
               <Link
                 key={label}

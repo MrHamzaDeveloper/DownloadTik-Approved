@@ -1,10 +1,21 @@
 // src/app/terms/page.js
+"use client"; // Make this a client-side component
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../../components/header'; // Adjust the import based on your structure
 import Footer from '../../components/Footer'; // Adjust the import based on your structure
 
 const TermsAndConditions = () => {
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Delay hydration logic until after the initial render
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  if (!isHydrated) {
+    return null; // You can show a loading spinner or nothing until hydration is complete
+  }
   return (
     <div>
       <Header />

@@ -64,6 +64,22 @@ export default function RootLayout({ children }) {
           type="font/woff"
           crossOrigin="anonymous"
         />
+        
+        {/* Google Analytics Code */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-FF1EZJCWPC"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-FF1EZJCWPC');
+            `,
+          }}
+        />
       </head>
       <body className="antialiased" suppressHydrationWarning>
         {children}

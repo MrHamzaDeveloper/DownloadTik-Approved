@@ -1,18 +1,26 @@
-// src/app/contact/page.js
 "use client"; 
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../../components/header'; // Adjust the import based on your structure
 import Footer from '../../components/Footer'; // Adjust the import based on your structure
 
 const Contact = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false); // Hydration state here
+
+  useEffect(() => {
+    setIsHydrated(true); // Ensure hydration only after the initial render
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
     setFormSubmitted(true); // Set the form submitted state to true
-    // Here, you could also handle the form submission, e.g., send data to a server
+    // Handle the form submission, e.g., send data to a server
   };
+
+  if (!isHydrated) {
+    return null; // Optionally, show a loading spinner or nothing until hydration is complete
+  }
 
   return (
     <div>
