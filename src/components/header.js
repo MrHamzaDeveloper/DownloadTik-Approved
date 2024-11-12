@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
+import { FaCheck, FaDownload } from "react-icons/fa";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -53,11 +54,14 @@ const Header = () => {
   return (
     <header className="bg-white text-gray-800 shadow-md sticky top-0 z-50 transition duration-300">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        {/* Logo as a clickable link */}
-        <Link href="/" className="text-2xl font-bold transition-transform duration-300 hover:text-blue-600">
-          DownloadTik.
-        </Link>
-
+      <Link href="/" className="flex items-center space-x-1 text-2xl font-bold transition-transform duration-300 hover:text-blue-600">
+      <div className="relative">
+        <FaDownload className="text-blue-600" />
+      
+      </div>
+      <span className="text-gray-900">Download</span>
+      <span className="text-blue-600">Tik.</span>
+    </Link>
         {/* Desktop Menu */}
         <nav className="hidden md:flex space-x-8" role="navigation">
           {menuItems.map(({ label, href }) => (
