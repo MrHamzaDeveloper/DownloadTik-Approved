@@ -24,7 +24,9 @@ const TermsAndConditions = () => {
         <p className="mb-4">Last updated: October 30, 2024</p>
 
         <p className="mb-4">
-          Welcome to DownloadTik! These Terms and Conditions outline the rules and regulations for using our website located at [insert your website URL].
+        Welcome to DownloadTik! These Terms and Conditions outline the rules and regulations for using our website located at <a href="https://downloadtik.com/privacy"  className="text-blue-500 hover:underline">Privacy Policy</a>.
+
+
         </p>
 
         <h2 className="text-2xl font-semibold mt-6 mb-4">Acceptance of Terms</h2>
