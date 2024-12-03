@@ -5,21 +5,19 @@ import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import "./globals.css";
 
-// Dynamically load the GDPR banner to avoid SSR-related hydration issues
 const GdprBanner = dynamic(() => import("../components/GdprBanner"), { ssr: false });
 
 export default function RootLayout({ children }) {
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
-    // Override console.error to filter out specific hydration mismatch warnings
     const originalError = console.error;
     console.error = (...args) => {
       if (
         typeof args[0] === "string" &&
         args[0].includes("A tree hydrated but some attributes of the server rendered HTML didn't match the client properties")
       ) {
-        return; // Suppress this specific error
+        return;
       }
       originalError(...args);
     };
@@ -31,7 +29,7 @@ export default function RootLayout({ children }) {
   useEffect(() => {
     const consent = Cookies.get("gdprConsent");
     if (!consent) {
-      setShowBanner(true); // Show the banner only if consent hasn't been set
+      setShowBanner(true);
     }
   }, []);
 
@@ -65,7 +63,6 @@ export default function RootLayout({ children }) {
           crossOrigin="anonymous"
         />
         
-        {/* Google Analytics Code */}
         <script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-FF1EZJCWPC"
@@ -83,6 +80,23 @@ export default function RootLayout({ children }) {
       </head>
       <body className="antialiased" suppressHydrationWarning>
         {children}
+
+        {/* AdSense Ad Slot */}
+        <div style={{ textAlign: "center", margin: "20px 0" }}>
+          <ins
+            className="adsbygoogle"
+            style={{ display: "block" }}
+            data-ad-client="ca-pub-2531527954745046"
+            data-ad-slot="1234567890" {/* Replace with your ad slot ID */}
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+          ></ins>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(adsbygoogle = window.adsbygoogle || []).push({});`,
+            }}
+          ></script>
+        </div>
 
         {showBanner && <GdprBanner onAccept={handleAccept} onDecline={handleDecline} />}
       </body>
