@@ -62,7 +62,8 @@ export default function RootLayout({ children }) {
           type="font/woff"
           crossOrigin="anonymous"
         />
-        
+
+        {/* Google Analytics */}
         <script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-FF1EZJCWPC"
@@ -77,27 +78,33 @@ export default function RootLayout({ children }) {
             `,
           }}
         />
+
+        {/* AdSense Script */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2531527954745046"
+          crossOrigin="anonymous"
+        ></script>
       </head>
       <body className="antialiased" suppressHydrationWarning>
         {children}
 
         {/* AdSense Ad Slot */}
-        <div style={{ textAlign: "center", margin: "20px 0" }}>
-          <ins
-            className="adsbygoogle"
-            style={{ display: "block" }}
-            data-ad-client="ca-pub-2531527954745046"
-            data-ad-slot="1234567890" {/* Replace with your ad slot ID */}
-            data-ad-format="auto"
-            data-full-width-responsive="true"
-          ></ins>
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `(adsbygoogle = window.adsbygoogle || []).push({});`,
-            }}
-          ></script>
-        </div>
+        <ins
+          className="adsbygoogle"
+          style={{ display: "block" }}
+          data-ad-client="ca-pub-2531527954745046"
+          data-ad-slot="1234567890" // Replace with your ad slot ID
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        ></ins>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(adsbygoogle = window.adsbygoogle || []).push({});`,
+          }}
+        ></script>
 
+        {/* GDPR Banner */}
         {showBanner && <GdprBanner onAccept={handleAccept} onDecline={handleDecline} />}
       </body>
     </html>
