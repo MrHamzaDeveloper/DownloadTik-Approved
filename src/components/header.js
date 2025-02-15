@@ -44,6 +44,7 @@ const Header = () => {
   const menuItems = useMemo(
     () => [
       { label: "Home", href: "/" }, // Adjusted for FAQ section on landing page
+      { label: "Blog", href: "/blog" },
       { label: "About Us", href: "/about" },
       { label: "Disclaimer", href: "/disclaimer" },
       { label: "Contact", href: "/contact" },

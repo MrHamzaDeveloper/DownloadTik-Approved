@@ -5,27 +5,15 @@ import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import "./globals.css";
 
-// Dynamically load the GDPR banner to avoid SSR-related hydration issues
+// Dynamically import GDPR banner, but avoid SSR-related hydration issues
 const GdprBanner = dynamic(() => import("../components/GdprBanner"), { ssr: false });
 
 export default function RootLayout({ children }) {
   const [showBanner, setShowBanner] = useState(false);
+  const [isClient, setIsClient] = useState(false); // Ensure client-side rendering
 
   useEffect(() => {
-    // Override console.error to filter out specific hydration mismatch warnings
-    const originalError = console.error;
-    console.error = (...args) => {
-      if (
-        typeof args[0] === "string" &&
-        args[0].includes("A tree hydrated but some attributes of the server rendered HTML didn't match the client properties")
-      ) {
-        return; // Suppress this specific error
-      }
-      originalError(...args);
-    };
-    return () => {
-      console.error = originalError;
-    };
+    setIsClient(true); // Mark that we're on the client
   }, []);
 
   useEffect(() => {
@@ -45,60 +33,67 @@ export default function RootLayout({ children }) {
     setShowBanner(false);
   };
 
-  // Only load the Google Analytics and AdSense scripts on the client
+  // Load external scripts only on the client side
   useEffect(() => {
-    // Google Analytics
-    const scriptAnalytics = document.createElement("script");
-    scriptAnalytics.src = "https://www.googletagmanager.com/gtag/js?id=G-FF1EZJCWPC";
-    scriptAnalytics.async = true;
-    document.head.appendChild(scriptAnalytics);
+    if (typeof window !== "undefined") {
+      // Google Analytics
+      const scriptAnalytics = document.createElement("script");
+      scriptAnalytics.src = "https://www.googletagmanager.com/gtag/js?id=G-FF1EZJCWPC";
+      scriptAnalytics.async = true;
+      document.head.appendChild(scriptAnalytics);
 
-    const scriptAnalyticsInit = document.createElement("script");
-    scriptAnalyticsInit.innerHTML = `
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-FF1EZJCWPC');
-    `;
-    document.head.appendChild(scriptAnalyticsInit);
+      const scriptAnalyticsInit = document.createElement("script");
+      scriptAnalyticsInit.innerHTML = `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-FF1EZJCWPC');
+      `;
+      document.head.appendChild(scriptAnalyticsInit);
 
-    // Google AdSense
-    const scriptAdsense = document.createElement("script");
-    scriptAdsense.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2531527954745046";
-    scriptAdsense.async = true;
-    scriptAdsense.crossOrigin = "anonymous";
-    document.head.appendChild(scriptAdsense);
-  }, []); // Run only on the client side
+      // Google AdSense
+      const scriptAdsense = document.createElement("script");
+      scriptAdsense.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2531527954745046";
+      scriptAdsense.async = true;
+      scriptAdsense.crossOrigin = "anonymous";
+      document.head.appendChild(scriptAdsense);
+    }
+  }, []);
 
   return (
     <html lang="en">
       <head>
-        {/* Google AdSense Account Meta Tag */}
         <meta name="google-adsense-account" content="ca-pub-2531527954745046" />
+        <title>Download TikTok Videos Without Watermark - Free & HD | DownloadTik</title>
+        <meta
+          name="description"
+          content="Download TikTok videos without watermark in HD quality. Fast, free, and secure TikTok video downloader. No login required!"
+        />
+        <meta name="keywords" content="TikTok downloader, download TikTok videos, TikTok video without watermark, free TikTok downloader, TikTok video saver" />
+        <link rel="canonical" href="https://downloadtik.com/" />
 
-        <meta name="description" content="Download TikTok videos with ease!" />
-        <title>DownloadTik</title>
-        <link
-          rel="preload"
-          href="/fonts/GeistVF.woff"
-          as="font"
-          type="font/woff"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/GeistMonoVF.woff"
-          as="font"
-          type="font/woff"
-          crossOrigin="anonymous"
-        />
+        {/* Open Graph (OG) Meta Tags for Social Sharing */}
+        <meta property="og:title" content="Download TikTok Videos Without Watermark - Free & HD | DownloadTik" />
+        <meta property="og:description" content="Easily download TikTok videos without watermark in HD. 100% free and no login required." />
+        <meta property="og:url" content="https://downloadtik.com/" />
+        <meta property="og:image" content="https://downloadtik.com/preview-image.jpg" />
+        <meta property="og:type" content="website" />
+
+        {/* Twitter Card Meta Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Download TikTok Videos Without Watermark - Free & HD | DownloadTik" />
+        <meta name="twitter:description" content="Easily download TikTok videos without watermark in HD. 100% free and no login required." />
+        <meta name="twitter:image" content="https://downloadtik.com/preview-image.jpg" />
+
+        {/* Preload Fonts for Performance */}
+        <link rel="preload" href="/fonts/GeistVF.woff" as="font" type="font/woff" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/GeistMonoVF.woff" as="font" type="font/woff" crossOrigin="anonymous" />
       </head>
+
       <body className="antialiased" suppressHydrationWarning>
         {children}
-
-        {showBanner && <GdprBanner onAccept={handleAccept} onDecline={handleDecline} />}
+        {isClient && showBanner && <GdprBanner onAccept={handleAccept} onDecline={handleDecline} />}
       </body>
     </html>
   );
 }
-

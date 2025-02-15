@@ -2,7 +2,6 @@
 
 import React, { Suspense } from "react";
 import dynamic from "next/dynamic";
-import Typewriter from "../components/Typewriter";
 import "./globals.css";
 
 // Dynamic imports with SSR disabled
@@ -15,18 +14,18 @@ const Footer = dynamic(() => import("../components/Footer"), { ssr: false });
 export default function Page() {
   return (
     <>
-      <Header />      
-      {/* Main content with hydration warning suppression */}
+      <Header />
+      {/* Main content */}
       <div className="container mx-auto py-10 px-4 flex flex-col items-center" suppressHydrationWarning>
-        <Typewriter text="Download TikTok video without watermark in HD Quality" />
+      <h3 className="text-xl font-bold text-center mb-4 text-gray-800 tracking-wide">
+  🚀 Paste the TikTok Video Link Below & Click <span className="text-blue-500">Fetch!</span> 🎬
+</h3>
+
         <VideoDownloadSection />
         <TikTokDownloaderInfo />
         <FAQs />
       </div>
-
-      
-        <Footer />
-      
+      <Footer />
     </>
   );
 }

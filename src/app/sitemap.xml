@@ -49,6 +49,26 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- Blog Listing Page -->
+  <url>
+    <loc>https://downloadtik.com/blog</loc>
+    <lastmod>2024-02-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Example Blog Posts -->
+  <url>
+    <loc>https://downloadtik.com/blog/sample-post-1</loc>
+    <lastmod>2024-02-15</lastmod>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://downloadtik.com/blog/sample-post-2</loc>
+    <lastmod>2024-02-15</lastmod>
+    <priority>0.6</priority>
+  </url>
+
   <!-- Sitemap -->
   <url>
     <loc>https://downloadtik.com/sitemap.xml</loc>
