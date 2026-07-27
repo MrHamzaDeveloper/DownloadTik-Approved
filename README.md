@@ -1,36 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# DownloadTik
 
-## Getting Started
+A TikTok video downloader that removes the watermark, letting users save clean videos without the TikTok logo overlay.
 
-First, run the development server:
+## Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+DownloadTik lets users paste a TikTok video link and download it without the platform's watermark. This was my first project built with Next.js, after having worked primarily with server-rendered stacks before, and it was later approved for Google AdSense monetization.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- **Watermark-free TikTok video downloads** from a simple link paste
+- **Video and audio download options** for a given TikTok link
+- **Clean, responsive UI** built with Tailwind CSS
+- **Google AdSense approved**, supporting the platform through ad monetization
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Tech Stack
 
-## Learn More
+- **Framework:** Next.js
+- **Styling:** Tailwind CSS
+- **Language:** JavaScript
 
-To learn more about Next.js, take a look at the following resources:
+## Background
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This was my first project built with Next.js, after starting out with more traditional server-rendered stacks. It was a hands-on way to learn the framework by shipping something real, rather than just following tutorials, and getting it approved for AdSense was a good early signal that the site met a real quality bar.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Status
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Live and AdSense-approved. Kept public as a reference for early Next.js work and the watermark-removal download flow.
