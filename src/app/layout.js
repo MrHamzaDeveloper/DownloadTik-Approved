@@ -53,7 +53,7 @@ export default function RootLayout({ children }) {
 
       // Google AdSense
       const scriptAdsense = document.createElement("script");
-      scriptAdsense.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2531527954745046";
+      scriptAdsense.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-";
       scriptAdsense.async = true;
       scriptAdsense.crossOrigin = "anonymous";
       document.head.appendChild(scriptAdsense);
